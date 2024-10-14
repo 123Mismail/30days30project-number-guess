@@ -1,58 +1,85 @@
 "use client";
+import React, { useEffect, useRef, useState } from "react";
 
-import { useState, useEffect } from "react";
-
-export default function Home() {
-  const [time, setTime] = useState(0);
-  const [running, setRunning] = useState(false);
-
+function NumberguessingGame() {
+  const [userGuesNumber, setUserGuesedNumber] = useState(0);
+  const [systemguesedNumber, setSystemGuesedNumber] = useState(0);
+  const [isCorrect,setIsCorrect]=useState("Your guess result shows here");
+  const [isPlayagain,setPalayAgain]=useState(false)
+   const usernumRef=useRef(null)
   useEffect(() => {
-    let interval:any;
-    if (running) {
-      interval = setInterval(() => {
-        setTime((pre) => pre + 10);
-      }, 10);
-    } else if(!running) {
-       clearInterval(interval)
+ 
+    generateRandomNmbr();
+    setUserGuesedNumber(0)
+     console.log(systemguesedNumber,"system gues number in useeffect")
+  }, [setPalayAgain]);
+
+  const generateRandomNmbr=()=>{
+    let num=Math.floor(Math.random()*2+1);
+    console.log(num);
+    setSystemGuesedNumber(num);
+    console.log(systemguesedNumber,"random number generated is")
+  }
+  const handelOnclickGues=()=>{
+    if(systemguesedNumber===userGuesNumber){
+      setIsCorrect("congratulations you guessed a right number");
+      setSystemGuesedNumber(0)
+      alert("congratulayions you guessed a right correct number")
+    }else{
+      setIsCorrect("Sorry your guess was wrong try again")
     }
-    return () => clearInterval(interval);
-  }, [running]);
+  };
+
+   const hanldePlayAgain=()=>{
+    setPalayAgain(true)
+    generateRandomNmbr();
+    setUserGuesedNumber(0);
+    setIsCorrect("Try again !!")
+
+   }
+
+  const handleOnchangebtn=(e)=>{
+    let usernum=e.target.value;
+    console.log(usernum)
+    
+    setUserGuesedNumber(Number(usernum));
+    
+   
+  }
 
   return (
-    <div className="flex justify-center flex-col items-center h-screen  bg-white">
-      <div className="h-[300px] shadow-blue-900 bg-black max-w-[600px] w-full text-white rounded-lg">
-        <div className="w-full text-2xl font-medium text-white text-center p-3">
-          <h1 className="text-3xl mt-2 font-semibold">Stop Watch</h1>
-        </div>
-        <div className="pl-4 pr-4 mt-6 mx-auto   bg-black text-white text-center text-5xl p-4 font-medium max-w-[220px] w-full rounded-lg ">
-          {" "}
-          <span className="mr-3 ">{Math.floor((time /60000) % 60)}:</span>
-          <span className="mr-2 ml-2">
-            {Math.floor((time /1000) % 60)}:
-          </span>
-          <span>{Math.floor((time / 10) % 100)}</span>
-        </div>
-        <div className="w-full mx-auto text-center pl-4 pr-4  mt-6">
-          <button
-            className="px-4 py-2 rounded-lg  hover:bg-green-400 hover:px-5 hover:py-3 cursor-pointer bg-green-600 text-lg font-medium text-white"
-            onClick={() => setRunning(true)}
-          >
-            start
-          </button>
-          <button
-            className="px-4 py-2 rounded-lg hover:px-5 hover:py-3 cursor-pointer font-medium bg-red-600 text-lg ml-2 mr-2 text-white"
-            onClick={() => setRunning(false)}
-          >
-            stop
-          </button>
-          <button
-            className="px-4 py-2 rounded-lg cursor-pointer hover:px-5 hover:py-3 font-medium bg-blue-600 text-lg text-white"
-            onClick={() => setTime(0)}
-          >
-            reset
-          </button>
-        </div>
+    <div className="h-[400px] max-w-[500px] w-full mx-auto rounded-2xl text-center  mt-[25vh] bg-gradient-to-b from-blue-500 to-purple-500">
+      <div className="p-6 text-2xl font-medium text-white">
+        <h1 className="font-sans text-2xl"> Number Guessing Game</h1>
       </div>
+      <div className="p-2">
+        <input
+          className="p-2 text-xl text-center rounded-lg"
+          type="number"
+          placeholder="Enter a number 1 to 10"
+          // ref={usernumRef}
+          onChange={(e)=>handleOnchangebtn(e)}
+        />
+      </div>
+      <div className="p-2 text-xl ">
+        <button className="px-5 py-3 hover:px-6 hover:py-4 hover:bg-blue-600 hover:shadow-2xl rounded-lg bg-blue-700 text-white"
+        onClick={handelOnclickGues}
+        >
+          Guess Number
+        </button>
+      </div>
+
+      <div className="p-2 ">
+        <p className="text-xl font-medium text-white">Result</p>
+  
+         <div className="p-2 text-2xl font-medium">{isCorrect}</div>
+        
+      </div>
+      <div><button className="px-4 py-2 rounded-xl text-xl font-medium  hover:px-5 hover:py-3 hover:bg-blue-800 hover:shadow-2xl bg-blue-600 text-white"
+      onClick={hanldePlayAgain}
+      >Play again</button></div>
     </div>
   );
 }
+
+export default NumberguessingGame;
